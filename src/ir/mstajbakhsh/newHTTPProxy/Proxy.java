@@ -89,7 +89,7 @@ public class Proxy extends OnionProxy implements Runnable {
             // Load in cached sites from file
             File cachedSites = new File("cachedSites.txt");
             if (!cachedSites.exists()) {
-                //System.out.println("No cached sites found - creating new file");
+                System.out.println("No cached sites found - creating new file");
                 cachedSites.createNewFile();
             } else {
                 FileInputStream fileInputStream = new FileInputStream(cachedSites);
@@ -112,11 +112,11 @@ public class Proxy extends OnionProxy implements Runnable {
                 objectInputStream.close();
             }
         } catch (IOException e) {
-            //System.out.println("Error loading previously cached sites file");
-            //e.printStackTrace();
+            System.out.println("Error loading previously cached sites file");
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            //System.out.println("Class not found loading in preivously cached sites file");
-            //e.printStackTrace();
+            System.out.println("Class not found loading in preivously cached sites file");
+            e.printStackTrace();
         }
 
         try {
@@ -125,19 +125,19 @@ public class Proxy extends OnionProxy implements Runnable {
 
             // Set the timeout
             //serverSocket.setSoTimeout(100000);	// debug
-            //System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "..");
+            System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "..");
             status.onConnectionPrepared(this);
             running = true;
         }
 
         // Catch exceptions associated with opening socket
         catch (SocketException se) {
-            //System.out.println("Socket Exception when connecting to client");
-            //se.printStackTrace();
+            System.out.println("Socket Exception when connecting to client");
+            se.printStackTrace();
         } catch (SocketTimeoutException ste) {
-            //System.out.println("Timeout occured while connecting to client");
+            System.out.println("Timeout occured while connecting to client");
         } catch (IOException io) {
-            //System.out.println("IO exception when connecting to client");
+            System.out.println("IO exception when connecting to client");
         }
     }
 
@@ -195,9 +195,9 @@ public class Proxy extends OnionProxy implements Runnable {
                 thread.start();
             } catch (SocketException e) {
                 // Socket exception is triggered by management system to shut down the proxy
-                //System.out.println("Server closed");
+                System.out.println("Server closed");
             } catch (IOException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         }
     }
@@ -207,7 +207,7 @@ public class Proxy extends OnionProxy implements Runnable {
      * Also joins all of the RequestHandler threads currently servicing requests.
      */
     private void closeServer() {
-        //System.out.println("\nClosing Server..");
+        System.out.println("\nClosing Server..");
         running = false;
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("cachedSites.txt");
@@ -228,18 +228,18 @@ public class Proxy extends OnionProxy implements Runnable {
                 // Close all servicing threads
                 for (Thread thread : servicingThreads) {
                     if (thread.isAlive()) {
-                        //System.out.print("Waiting on " + thread.getId() + " to close..");
+                        System.out.print("Waiting on " + thread.getId() + " to close..");
                         thread.join();
-                        //System.out.println(" closed");
+                        System.out.println(" closed");
                     }
                 }
             } catch (InterruptedException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
         } catch (IOException e) {
-            //System.out.println("Error saving cache/blocked sites");
-            //e.printStackTrace();
+            System.out.println("Error saving cache/blocked sites");
+            e.printStackTrace();
         }
 
         // Close Server Socket
@@ -247,8 +247,8 @@ public class Proxy extends OnionProxy implements Runnable {
             //System.out.println("Terminating Connection");
             serverSocket.close();
         } catch (Exception e) {
-            //System.out.println("Exception closing proxy's server socket");
-            //e.printStackTrace();
+            System.out.println("Exception closing proxy's server socket");
+            e.printStackTrace();
         }
 
     }

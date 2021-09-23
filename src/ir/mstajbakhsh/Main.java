@@ -18,12 +18,13 @@ public class Main {
 
         @Override
         public void onConnectionClosed(OnionProxy OnionProxy) {
-            System.out.println("[+] Connection closed " + OnionProxy.toString());
+            System.out.println("[-] Connection closed " + OnionProxy.toString());
         }
 
         @Override
         public void onExceptionOccured(OnionProxy OnionProxy, Exception ex) {
-            System.out.println("[+] Connection dropped " + OnionProxy.toString() + " (Cause: " + ex.getMessage().replaceAll("\r\n", " "));
+            System.out.println("[-] Connection dropped " + OnionProxy.toString() +
+                    " (Cause: " + ex.getMessage().replaceAll("\r\n", " "));
         }
 
         @Override

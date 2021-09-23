@@ -65,14 +65,14 @@ public class RequestHandler implements Runnable {
             requestString = proxyToClientBr.readLine();
             //Do not need request line: header += requestString;
         } catch (IOException e) {
-            //e.printStackTrace();
-            //System.out.println("Error reading request from client");
+            e.printStackTrace();
+            System.out.println("Error reading request from client");
             return;
         }
 
         // Parse out URL
 
-        //System.out.println("Reuest Received " + requestString);
+        System.out.println("Request Received " + requestString);
         // Get the Request type
         String request = requestString.substring(0, requestString.indexOf(' '));
 
@@ -99,16 +99,16 @@ public class RequestHandler implements Runnable {
 
         // Check request type
         if (request.equals("CONNECT")) {
-            //System.out.println("HTTPS Request for : " + urlString + "\n");
+            System.out.println("HTTPS Request for : " + urlString + "\n");
             handleHTTPSRequest(urlString);
         } else {
             // Check if we have a cached copy
             File file;
             if ((file = Proxy.getCachedPage(urlString)) != null) {
-                //System.out.println("Cached Copy found for : " + urlString + "\n");
+                System.out.println("Cached Copy found for : " + urlString + "\n");
                 sendCachedPageToClient(file);
             } else {
-                //System.out.println("HTTP GET for : " + urlString + "\n");
+                System.out.println("HTTP GET for : " + urlString + "\n");
 
                 try {
                     String line = proxyToClientBr.readLine();
@@ -123,7 +123,7 @@ public class RequestHandler implements Runnable {
                         line = proxyToClientBr.readLine();
                     }
                 } catch (Exception e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
 
 
@@ -197,8 +197,8 @@ public class RequestHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            //System.out.println("Error Sending Cached file to client");
-            //e.printStackTrace();
+            System.out.println("Error Sending Cached file to client");
+            e.printStackTrace();
         }
     }
 
@@ -374,7 +374,7 @@ public class RequestHandler implements Runnable {
                             proxyToClientBw.write(line2);
                         }
                     } catch (IOException e) {
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     }
                 });
 
@@ -416,7 +416,7 @@ public class RequestHandler implements Runnable {
                 proxyToClientBw.close();
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -480,11 +480,11 @@ public class RequestHandler implements Runnable {
                 // Create Buffered output stream to write to cached copy of file
                 fileToCacheBW = new BufferedWriter(new FileWriter(fileToCache));
             } catch (IOException e) {
-                //System.out.println("Couldn't cache: " + fileName);
+                System.out.println("Couldn't cache: " + fileName);
                 caching = false;
-                //e.printStackTrace();
+                e.printStackTrace();
             } catch (NullPointerException e) {
-                //System.out.println("NPE opening file");
+                System.out.println("NPE opening file");
             }
 
 
@@ -519,8 +519,8 @@ public class RequestHandler implements Runnable {
 
                     // No image received from remote server
                 } else {
-                    //System.out.println("Sending 404 to client as image wasn't received from server"
-                    //        + fileName);
+                    System.out.println("Sending 404 to client as image wasn't received from server"
+                            + fileName);
                     String error = "HTTP/1.0 404 NOT FOUND\n" +
                             "Proxy-agent: ProxyServer/1.0\n" +
                             "\r\n";
@@ -723,7 +723,7 @@ public class RequestHandler implements Runnable {
             } catch (SocketTimeoutException e) {
 
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
 
@@ -756,8 +756,8 @@ public class RequestHandler implements Runnable {
                 ioe.printStackTrace();
             }
         } catch (Exception e) {
-            //System.out.println("Error on HTTPS : " + urlString);
-            //e.printStackTrace();
+            System.out.println("Error on HTTPS : " + urlString);
+            e.printStackTrace();
         }
     }
 
@@ -774,16 +774,16 @@ public class RequestHandler implements Runnable {
             bufferedWriter.write(line);
             bufferedWriter.flush();
         } catch (IOException e) {
-            //System.out.println("Error writing to client when requested a blocked site");
-            //e.printStackTrace();
+            System.out.println("Error writing to client when requested a blocked site");
+            e.printStackTrace();
         }
     }
 
     /**
      * Listen to data from client and transmits it to server.
-     * This is done on a separate thread as must be done
+     * This is done on a separate thread as it must be done
      * asynchronously to reading data from server and transmitting
-     * that data to the client.
+     * it to the client.
      */
     class ClientToServerHttpsTransmit implements Runnable {
 
@@ -810,6 +810,9 @@ public class RequestHandler implements Runnable {
                 do {
                     read = proxyToClientIS.read(buffer);
                     if (read > 0) {
+                        System.out.println("====================> FROM CLIENT");
+                        System.out.println(read);
+                        System.out.println("<==================== FROM CLIENT");
                         proxyToServerOS.write(buffer, 0, read);
                         if (proxyToClientIS.available() < 1) {
                             proxyToServerOS.flush();
@@ -819,8 +822,8 @@ public class RequestHandler implements Runnable {
             } catch (SocketTimeoutException ste) {
                 // TODO: handle exception
             } catch (IOException e) {
-                //System.out.println("Proxy to client HTTPS read timed out");
-                //e.printStackTrace();
+                System.out.println("Proxy to client HTTPS read timed out");
+                e.printStackTrace();
             }
         }
     }

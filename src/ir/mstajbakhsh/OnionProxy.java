@@ -1,8 +1,10 @@
 package ir.mstajbakhsh;
 
 import java.net.Socket;
+import java.util.UUID;
 
 public class OnionProxy implements IProxy {
+    final String _id;
     String _Host;
     String _HiddenHost;
     int _Port;
@@ -10,6 +12,7 @@ public class OnionProxy implements IProxy {
     ITunnelStatus eventHandler;
 
     public OnionProxy(String Host, int Port, ITunnelStatus eventHandler) {
+        this._id = UUID.randomUUID().toString().substring(24);
         this._Host = Host;
         this._HiddenHost = Host;
         this._Port = Port;
@@ -17,6 +20,7 @@ public class OnionProxy implements IProxy {
         this.eventHandler = eventHandler;
 
         if (getType() == AddressHelper.AddressType.HiddenService) {
+            System.out.println("CREATE INNER HANDLER!!!");
             createInnerHandler();
         }
     }
@@ -27,7 +31,7 @@ public class OnionProxy implements IProxy {
     }
 
     @Override
-    public void restoreConnection(String host, int port) {
+    public void startServer() {
 
     }
 
@@ -50,7 +54,7 @@ public class OnionProxy implements IProxy {
 
     @Override
     public String toString() {
-        return getHost() + ":" + getPort() + "<=>" + _HiddenHost + ":" + _HiddenPort;
+        return "id:" + _id + " " + getHost() + ":" + getPort() + "<=>" + _HiddenHost + ":" + _HiddenPort;
     }
 
     public String getProxyType() {
